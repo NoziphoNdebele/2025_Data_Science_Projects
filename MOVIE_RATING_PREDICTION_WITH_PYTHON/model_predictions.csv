@@ -1,0 +1,4 @@
+Model,MAE,MSE,RMSE,R²
+Random Forest (Tuned),0.94,1.52,1.23,0.15
+XGBoost (Tuned),0.92,1.45,1.2,0.19
+KNN (Tuned),0.93,1.44,1.2,0.19
