@@ -4,6 +4,7 @@ import pickle
 from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score, RocCurveDisplay, PrecisionRecallDisplay
 import matplotlib.pyplot as plt
 import seaborn as sns
+import os
 
 # ------------------------------
 # Load trained models
@@ -96,10 +97,12 @@ model_choice = st.sidebar.selectbox(
     ("Tuned Random Forest", "Tuned XGBoost", "Tuned CatBoost")
 )
 
+
+BASE_DIR = os.path.dirname(__file__)
 model_paths = {
-    "Tuned Random Forest": "rf_best_model.pkl",
-    "Tuned XGBoost": "xgb_best_model.pkl",
-    "Tuned CatBoost": "cat_best_model.pkl"
+    "Tuned Random Forest": os.path.join(BASE_DIR, "rf_best_model.pkl"),
+    "Tuned XGBoost": os.path.join(BASE_DIR, "xgb_best_model.pkl"),
+    "Tuned CatBoost": os.path.join(BASE_DIR, "cat_best_model.pkl")
 }
 
 # Load selected model
@@ -110,7 +113,9 @@ st.sidebar.success(f"{model_choice} loaded.")
 # Load built-in test data from project directory
 st.subheader("📂 Evaluating Preloaded Test Dataset")
 try:
-    test_data = pd.read_csv("test_data.csv")  # Ensure this file exists in the app folder
+    test_data_path = os.path.join(BASE_DIR, "test_data.csv")
+    test_data = pd.read_csv(test_data_path)
+  # Ensure this file exists in the app folder
 
     if 'Class' in test_data.columns:
         X_test = test_data.drop('Class', axis=1)
