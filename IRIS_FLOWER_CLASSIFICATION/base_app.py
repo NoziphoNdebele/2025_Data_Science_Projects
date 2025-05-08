@@ -7,6 +7,22 @@ import pandas as pd
 # Page configuration
 st.set_page_config(page_title="Iris Classifier 🌸", layout="centered")
 
+# Custom CSS for pale purple background
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: #f3e5f5;
+    }
+    .stApp {
+        background-color: #f3e5f5;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
 # Load models and label encoder
 @st.cache_resource
 def load_models():
@@ -33,19 +49,15 @@ df = pd.DataFrame({
     "species": ["setosa", "versicolor", "virginica"]
 })
 
-# Dummy results (use your actual values here)
+# results 
 results = {
     "KNN": 0.96,
-    "SVM": 0.98
+    "SVM": 0.97
 }
 
 # App title
 st.title("🌸 Iris Flower Classification App")
 st.markdown("Created by **Nozipho Sithembiso Ndebele**")
-
-# Dataset Preview
-st.header("🔍 Sample Dataset")
-st.dataframe(df)
 
 # Model Accuracies
 st.header("📊 Model Accuracies")
