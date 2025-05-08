@@ -10,15 +10,9 @@ pickle-mixin
 
 # NLP
 nltk
-regex  # Provides 're' capabilities if separate package used
+regex
 
-# Model-specific
+# ML models and balancing
 xgboost
 catboost
 imbalanced-learn
-
-# Optional: suppressing warnings and interactive use
-warnings  # This is part of Python standard library, no need to install
-
-# Note: Jupyter is useful if you're working in notebooks
-jupyterlab
