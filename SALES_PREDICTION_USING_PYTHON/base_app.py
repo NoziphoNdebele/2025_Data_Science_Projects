@@ -18,6 +18,21 @@ with open('tuned_random_forest_regressor.pkl', 'rb') as file:
 lr_model = LinearRegression()
 lr_model.fit(df[['TV']], df['Sales'])
 
+# Custom CSS for pale blue background
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: #e6f2ff;
+    }
+    .stApp {
+        background-color: #e6f2ff;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # Streamlit UI
 st.title("📊 Sales Prediction App")
 st.markdown("**Project by: Nozipho Sithembiso Ndebele**")
