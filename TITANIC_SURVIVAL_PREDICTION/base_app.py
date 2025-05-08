@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -5,9 +6,37 @@ import matplotlib.pyplot as plt
 import joblib
 
 # Load trained model (ensure you have saved it as 'best_model.pkl')
-model = joblib.load('best_logistic_model.pkl')
+BASE_DIR = os.path.dirname(__file__)
+model_path = os.path.join(BASE_DIR, 'best_logistic_model.pkl')
 
 st.set_page_config(page_title="Titanic Survival Prediction", layout="centered")
+
+# Apply pale green background using custom CSS
+st.markdown("""
+    <style>
+        body {
+            background-color: #e6f4ea; /* Pale green */
+        }
+        .stApp {
+            background-color: #e6f4ea; /* Pale green */
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+
+@st.cache_resource
+def load_model():
+    try:
+        return joblib.load(model_path)
+    except Exception as e:
+        st.error(f"Error loading model: {e}")
+        return None
+
+model = load_model()
+
+if model is None:
+    st.stop()
+
 
 # Title and Description
 st.title("🚢 Titanic Survival Prediction App")
@@ -78,14 +107,10 @@ plt.xticks(rotation=0)
 st.pyplot(fig)
 
 # About
-st.subheader("📌 Insights & Conclusion")
+st.subheader(" Insights & Conclusion")
 st.markdown("""
 - **Random Forest** and **Logistic Regression** models performed well, with accuracies above 81%.
 - **Tuned Logistic Regression** slightly outperformed Random Forest after hyperparameter tuning.
 - The model can help identify survival likelihood based on key features like age, sex, and class.
 
-### 🚀 Future Work:
-- Add more features (e.g., family size, cabin).
-- Deploy using Docker or on the cloud (e.g., Streamlit Community Cloud).
-- Expand to a full dashboard with SHAP visualizations for model explainability.
 """)
