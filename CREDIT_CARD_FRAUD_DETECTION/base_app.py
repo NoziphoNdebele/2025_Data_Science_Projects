@@ -62,7 +62,6 @@ def evaluate_model(model, X_test, y_test):
     ax_pr.set_title("📉 Precision-Recall Curve")
     st.pyplot(fig_pr)
 
-
     # 📊 Pie Chart of Prediction Summary
     pred_counts = pd.Series(y_pred).value_counts().rename({0: 'Not Fraud', 1: 'Fraud'})
     fig_pie, ax_pie = plt.subplots()
@@ -73,6 +72,18 @@ def evaluate_model(model, X_test, y_test):
 # ------------------------------
 # Streamlit App UI
 st.set_page_config(page_title="Fraud Detection App", layout="wide")
+
+# Set light grey background
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background-color: #D3D3D3;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 st.title("💳 Credit Card Fraud Detection Dashboard")
 st.markdown("A machine learning-powered tool to evaluate models trained to detect fraudulent credit card transactions.")
