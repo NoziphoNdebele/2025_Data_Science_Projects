@@ -1,18 +1,8 @@
-# Core packages
+streamlit
 pandas
 numpy
-scikit-learn
 matplotlib
 seaborn
-plotly
-streamlit
-pickle-mixin
-
-# NLP
-nltk
-regex
-
-# ML models and balancing
+scikit-learn
 xgboost
 catboost
-imbalanced-learn
