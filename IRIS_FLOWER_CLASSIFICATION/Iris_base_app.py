@@ -24,19 +24,23 @@ st.markdown(
 
 
 # Load models and label encoder
+import os
+
 @st.cache_resource
 def load_models():
     try:
-        with open("best_knn_model.pkl", "rb") as f:
+        BASE_DIR = os.path.dirname(__file__)
+        with open(os.path.join(BASE_DIR, "best_knn_model.pkl"), "rb") as f:
             knn = pickle.load(f)
-        with open("best_svm_model.pkl", "rb") as f:
+        with open(os.path.join(BASE_DIR, "best_svm_model.pkl"), "rb") as f:
             svm = pickle.load(f)
-        with open("label_encoder.pkl", "rb") as f:
+        with open(os.path.join(BASE_DIR, "label_encoder.pkl"), "rb") as f:
             le = pickle.load(f)
         return {"KNN": knn, "SVM": svm}, le
     except Exception as e:
         st.error(f"Failed to load models: {e}")
         return {}, None
+
 
 models, le = load_models()
 
