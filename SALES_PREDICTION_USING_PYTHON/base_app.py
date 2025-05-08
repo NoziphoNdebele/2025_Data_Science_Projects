@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -5,14 +6,40 @@ import pickle
 from sklearn.linear_model import LinearRegression
 
 # Load dataset
-df = pd.read_csv("cleaned_advertising.csv")  # Make sure this file is in your directory
+BASE_DIR = os.path.dirname(__file__)
 
-# Load trained models
-with open('tuned_decision_tree_regressor.pkl', 'rb') as file:
-    dt_model = pickle.load(file)
+@st.cache_data
+def load_dataset():
+    try:
+        data_path = os.path.join(BASE_DIR, "cleaned_advertising.csv")
+        df = pd.read_csv(data_path)
+        return df
+    except Exception as e:
+        st.error(f"Error loading dataset: {e}")
+        return pd.DataFrame()
 
-with open('tuned_random_forest_regressor.pkl', 'rb') as file:
-    rf_model = pickle.load(file)
+df = load_dataset()
+
+if df.empty or 'TV' not in df.columns:
+    st.error("❌ Dataset not loaded properly or missing expected columns ['TV', 'Sales'].")
+    st.stop()
+
+
+@st.cache_resource
+def load_models():
+    try:
+        BASE_DIR = os.path.dirname(__file__)
+        with open(os.path.join(BASE_DIR, 'tuned_decision_tree_regressor.pkl'), 'rb') as file:
+            dt_model = pickle.load(file)
+        with open(os.path.join(BASE_DIR, 'tuned_random_forest_regressor.pkl'), 'rb') as file:
+            rf_model = pickle.load(file)
+        return dt_model, rf_model
+    except Exception as e:
+        st.error(f"Error loading models: {e}")
+        return None, None
+
+dt_model, rf_model = load_models()
+
 
 # Linear Regression for baseline
 lr_model = LinearRegression()
