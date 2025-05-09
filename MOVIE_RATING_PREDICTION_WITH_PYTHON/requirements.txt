@@ -7,3 +7,5 @@ plotly
 nltk
 scikit-learn
 xgboost
+joblib
+pickle
