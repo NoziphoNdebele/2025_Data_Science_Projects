@@ -7,7 +7,7 @@ import joblib
 
 # Load trained model (ensure you have saved it as 'best_model.pkl')
 BASE_DIR = os.path.dirname(__file__)
-model_path = os.path.join(BASE_DIR, 'best_logistic_model.pkl')
+model_path = os.path.join(BASE_DIR, 'best_model.pkl')
 
 st.set_page_config(page_title="Titanic Survival Prediction", layout="centered")
 
