@@ -23,13 +23,9 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-
-# Load model and scaler
-with open(os.path.join(BASE_DIR, 'best_movie_rating_model.pkl'), 'rb') as f:
+# Load model
+with open(os.path.join(BASE_DIR, 'tuned_xgboost_model.pkl'), 'rb') as f:
     model = pickle.load(f)
-
-with open(os.path.join(BASE_DIR, 'scaler.pkl'), 'rb') as f:
-    scaler = pickle.load(f)
 
 # Load dataset for EDA
 @st.cache_data
@@ -51,7 +47,7 @@ if selected_tab == "Overview":
     
     **Key Features:**
     - Exploratory Data Analysis (EDA)
-    - Predict movie ratings using Random Forest
+    - Predict movie ratings using XGBoost
     - Interactive inputs for new predictions
     - Visual evaluation of model performance
     """)
@@ -76,60 +72,68 @@ elif selected_tab == "Predict Rating":
     st.title("🎯 Predict Movie Rating")
     st.markdown("Enter movie features below to predict the IMDb rating:")
 
-    # Input features
-    duration = st.number_input("Duration (minutes)", min_value=30, max_value=240, value=120)
+    # Input features matching the training data
+    year = st.number_input("Year", min_value=1900, max_value=2025, value=2020)
     votes = st.number_input("Number of Votes", min_value=100, value=10000)
     genre_avg = st.number_input("Genre Average Rating (0.0 - 10.0)", min_value=0.0, max_value=10.0, value=6.5)
     director_avg = st.number_input("Director Average Rating (0.0 - 10.0)", min_value=0.0, max_value=10.0, value=6.8)
     actor1_avg = st.number_input("Actor 1 Average Rating", min_value=0.0, max_value=10.0, value=6.5)
     actor2_avg = st.number_input("Actor 2 Average Rating", min_value=0.0, max_value=10.0, value=6.0)
     actor3_avg = st.number_input("Actor 3 Average Rating", min_value=0.0, max_value=10.0, value=5.5)
-    genre_encoded = st.number_input("Genre Encoded (e.g., Action=0, Comedy=1...)", min_value=0, value=0)
-    director_encoded = st.number_input("Director Encoded (unique ID)", min_value=0, value=100)
 
+    # Prepare the input data for prediction (matching the feature set in training)
     input_data = pd.DataFrame({
-        'Duration': [duration],
+        'Year': [year],
         'Votes': [votes],
         'Genre_Average_Rating': [genre_avg],
         'Director_Average_Rating': [director_avg],
-        'Actor 1_Average_Rating': [actor1_avg],
-        'Actor 2_Average_Rating': [actor2_avg],
-        'Actor 3_Average_Rating': [actor3_avg],
-        'Genre_encoded': [genre_encoded],
-        'Director_encoded': [director_encoded],
+        'Actor1_Average_Rating': [actor1_avg],
+        'Actor2_Average_Rating': [actor2_avg],
+        'Actor3_Average_Rating': [actor3_avg],
     })
 
-    scaled_input = scaler.transform(input_data)
-
     if st.button("Predict"):
-        rating_pred = model.predict(scaled_input)[0]
+        rating_pred = model.predict(input_data)[0]
         st.success(f"🎬 Predicted IMDb Rating: **{rating_pred:.2f}**")
 
 # Tab 4: Model Evaluation
 elif selected_tab == "Model Evaluation":
     st.title("📈 Model Evaluation")
-    st.markdown("Visualize how well the model performs on test data.")
+    st.markdown("Visualize how well the models perform on test data.")
 
-    try:
-        eval_df = pd.read_csv(os.path.join(BASE_DIR, "model_predictions.csv"))
+    # Displaying results for Tuned Random Forest and Tuned XGBoost models
+    st.subheader("Tuned Random Forest Evaluation:")
 
-        st.subheader("Model Performance Metrics")
-        st.dataframe(eval_df)
+    st.write("**MAE:** 0.4008")
+    st.write("**MSE:** 0.3625")
+    st.write("**RMSE:** 0.6020")
+    st.write("**R²:** 0.7975")
 
-        st.subheader("Model Comparison")
-        fig, ax = plt.subplots(figsize=(10, 6))
-        sns.barplot(x='Model', y='RMSE', data=eval_df, ax=ax)
-        ax.set_title('Model Comparison by RMSE')
-        st.pyplot(fig)
+    st.subheader("Tuned XGBoost Evaluation:")
+   
+    st.write("**MAE:** 0.3937")
+    st.write("**MSE:** 0.3283")
+    st.write("**RMSE:** 0.5730")
+    st.write("**R²:** 0.8166")
 
-    except FileNotFoundError:
-        st.warning("model_predictions.csv not found. Please add evaluation results.")
+    # add a bar plot comparison
+    model_comparison = pd.DataFrame({
+        'Model': ['Random Forest', 'XGBoost'],
+        'RMSE': [0.6020, 0.5730],
+    })
+
+    st.subheader("Model Comparison by RMSE")
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.barplot(x='Model', y='RMSE', data=model_comparison, ax=ax)
+    ax.set_title('Model Comparison by RMSE')
+    st.pyplot(fig)
+
 
 # Tab 5: Conclusion
 elif selected_tab == "Conclusion":
     st.title("Conclusion")
     st.markdown("""
-    This Streamlit app showcases a movie rating prediction model using Random Forest.
+    This Streamlit app showcases a movie rating prediction model using XGBoost.
 
     Built with:
     - Machine Learning
